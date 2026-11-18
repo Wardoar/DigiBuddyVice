@@ -120,7 +120,7 @@ final class ItemUse {
       if (remaining == initialCount - 1) {
         consumed = true;
         return finish(
-            AppLanguage.text("text_used") + AppLanguage.catalogText(DataNames.ITEMS[item]));
+            AppLanguage.text("text_used") + DataNames.itemName(item, ram, profile));
       }
       if (remaining != initialCount)
         return fail(AppLanguage.text("text_the_item_s_quantity_has_changed"));

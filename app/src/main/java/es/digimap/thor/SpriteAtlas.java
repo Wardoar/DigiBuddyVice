@@ -139,6 +139,7 @@ final class SpriteAtlas {
   }
 
   Bitmap mon(int type, byte[] ram, GameData.Profile profile) {
+    if (type >= 62 && type <= 66) return enemy(type, ram, profile);
     if (type < 1
         || type > 61
         || ram == null

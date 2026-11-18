@@ -1121,7 +1121,7 @@ public final class MainActivity extends Activity implements DisplayManager.Displ
       showMessage(reason);
       return;
     }
-    String previousName = AppLanguage.catalogText(DataNames.DIGIMON[history.source]);
+    String previousName = DataNames.digimonName(history.source, session.ram, currentProfile);
     confirmAction(
         AppLanguage.text("text_return_to") + previousName,
         AppLanguage.text(

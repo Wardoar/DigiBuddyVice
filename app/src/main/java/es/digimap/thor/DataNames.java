@@ -446,4 +446,46 @@ final class DataNames {
     "@text_noble_mane",
     "@text_metal_banana"
   };
+
+  static String ascii(byte[] r, int o, int m) {
+    if (r == null || o < 0 || o + m > r.length) return "";
+    int n = 0;
+    while (n < m && r[o + n] != 0) {
+      int b = r[o + n] & 255;
+      if (b < 32 || b > 126) return "";
+      n++;
+    }
+    return n == 0 ? "" : new String(r, o, n).trim();
+  }
+
+  static String digimonName(int t, byte[] r, GameData.Profile p) {
+    if (t < 0 || t >= DIGIMON.length)
+      return AppLanguage.text("text_digimon") + t;
+    if (r != null && p != null && "us".equals(p.id) && t >= 1) {
+      String s = ascii(r, p.at("DIGIMON_DATA") + t * 52, 20);
+      if ("WGarurumon".equalsIgnoreCase(s)) return "WereGarurumon";
+      if ("Machinedramon".equalsIgnoreCase(s)) return "Machinedramon";
+      if ("Panjyamon".equalsIgnoreCase(s)) return "Panjyamon";
+      if ("Myotismon".equalsIgnoreCase(s)) return "Myotismon";
+      if (!s.isEmpty() && t >= 62 && t <= 66) return s;
+    }
+    String b = AppLanguage.catalogText(DIGIMON[t]);
+    return b.isEmpty() ? AppLanguage.text("text_digimon") + t : b;
+  }
+
+  static String itemName(int id, byte[] r, GameData.Profile p) {
+    if (id < 0 || id >= ITEMS.length)
+      return AppLanguage.text("text_item") + id;
+    if (r != null && p != null && "us".equals(p.id)) {
+      String s = ascii(r, p.at("ITEM_PARA") + id * 32, 16);
+      if ("Machi Coder".equalsIgnoreCase(s)
+          || "King Crown".equalsIgnoreCase(s)
+          || "Weird Slime".equalsIgnoreCase(s)
+          || "Ugly Mirror".equalsIgnoreCase(s)
+          || "Moon Mirror".equalsIgnoreCase(s)
+          || "Noble Mane".equalsIgnoreCase(s)) return s;
+    }
+    String b = AppLanguage.catalogText(ITEMS[id]);
+    return b.isEmpty() ? AppLanguage.text("text_item") + id : b;
+  }
 }

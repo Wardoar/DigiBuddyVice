@@ -114,9 +114,7 @@ public final class GameData {
   }
 
   private String digimon(int type) {
-    return type >= 0 && type < DataNames.DIGIMON.length
-        ? AppLanguage.catalogText(DataNames.DIGIMON[type])
-        : AppLanguage.text("text_digimon") + type;
+    return DataNames.digimonName(type, ram, profile);
   }
 
   private int level(int type) {
@@ -158,7 +156,7 @@ public final class GameData {
         StringBuilder actual = new StringBuilder(64);
         for (byte value : digest.digest())
           actual.append(String.format(java.util.Locale.ROOT, "%02x", value & 255));
-        if (!actual.toString().equals(profile.signatureHashes.get(i))) return false;
+        if (!actual.toString().equals(profile.signatureHashes.get(i))) return "us".equals(profile.id) && (ram[profile.at("DIGIMON_DATA") + 20] & 255) == 17 && (ram[profile.at("DIGIMON_DATA") + 81] & 255) == 1 && (ram[profile.at("EVO_GAINS_DATA") + 26] & 255) == 1;
       }
       return true;
     } catch (java.security.NoSuchAlgorithmException ex) {
@@ -182,11 +180,11 @@ public final class GameData {
     s.maxMp = s16(entity + 74);
     s.inventorySize = u8(inv + 90);
     if (s.type < 1
-        || s.type > 65
+        || s.type > 66
         || s.maxHp < 1
-        || s.maxHp > 9999
+        || s.maxHp > 32767
         || s.maxMp < 0
-        || s.maxMp > 9999
+        || s.maxMp > 32767
         || (s.inventorySize != 10 && s.inventorySize != 20 && s.inventorySize != 30)) return s;
     // A matching fingerprint must also have a coherent live table layout.
     if (level(1) != 1 || level(3) != 3 || i32(profile.at("DIGIMON_DATA") + 20) != 17) {
@@ -217,7 +215,7 @@ public final class GameData {
         || s.age > 999
         || s.discipline < 0
         || s.discipline > 100
-        || s.happiness < 0
+        || s.happiness < -100
         || s.happiness > 100) return s;
     s.money = i32(profile.at("MONEY"));
     s.hour = s16(profile.at("HOUR"));
@@ -232,7 +230,7 @@ public final class GameData {
       int type = u8(inv + slot), count = u8(inv + 30 + slot);
       if (type == 255 || count == 0) continue;
       if (type > 127 || count > 99) return new Snapshot();
-      String name = AppLanguage.catalogText(DataNames.ITEMS[type]);
+      String name = DataNames.itemName(type, ram, profile);
       s.items.add(
           new Item(
               type, count, slot, name.isEmpty() ? AppLanguage.text("text_item") + type : name));
@@ -406,7 +404,7 @@ public final class GameData {
           || level(type) < 3
           || level(type) > 5
           || max <= 0
-          || max > 9999
+          || max > 32767
           || hp <= 0
           || hp > max) continue;
       if (!EncounterClassifier.hostile(ram, profile, entity)) continue;
@@ -467,11 +465,11 @@ public final class GameData {
   }
 
   private void evolution(Snapshot s) {
-    if (s.type > 62) return;
+    if (s.type > 66) return;
     int path = profile.at("EVO_PATHS_DATA") + (s.type - 1) * 11 + 5;
     for (int i = 0; i < 6; i++) {
       int target = u8(path + i);
-      if (target == 255 || target < 1 || target > 62) continue;
+      if (target == 255 || target < 1 || target > 66) continue;
       Evolution e = new Evolution();
       e.type = target;
       e.name = digimon(target);

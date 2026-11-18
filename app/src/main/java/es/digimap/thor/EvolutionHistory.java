@@ -25,7 +25,7 @@ final class EvolutionHistory {
   EvolutionHistory(String profileId, int source, int target, int lifeGeneration, int birthDay) {
     if (profileId == null || !profileId.matches("[a-z][a-z0-9_-]{0,31}"))
       throw new IllegalArgumentException("Invalid evolution profile");
-    if (source < 1 || source > 62 || target < 1 || target > 62 || source == target)
+    if (source < 1 || source > 66 || target < 1 || target > 66 || source == target)
       throw new IllegalArgumentException("Invalid evolution species");
     if (lifeGeneration < 0 || lifeGeneration > 99 || birthDay < 0 || birthDay >= 3000)
       throw new IllegalArgumentException("Invalid partner generation");

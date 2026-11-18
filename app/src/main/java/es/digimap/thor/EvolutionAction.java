@@ -113,7 +113,7 @@ final class EvolutionAction {
 
   private static boolean hasNaturalPath(
       byte[] ram, GameData.Profile profile, int source, int target) {
-    if (source < 1 || source > 62 || target < 1 || target > 62) return false;
+    if (source < 1 || source > 66 || target < 1 || target > 66) return false;
     int path = profile.at("EVO_PATHS_DATA") + (source - 1) * 11 + 5;
     for (int entry = 0; entry < 6; entry++)
       if (unsignedByte(ram, path + entry) == target) return true;
@@ -122,7 +122,7 @@ final class EvolutionAction {
 
   private static boolean nativeTargetMatches(byte[] ram, GameData.Profile profile, int target) {
     return target >= 1
-        && target <= 62
+        && target <= 66
         && signedShort(ram, profile.at("EVO_GAINS_DATA") + target * 14 + 12) == target;
   }
 
